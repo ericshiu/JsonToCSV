@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>jsonToCSV</title>
+  <button id="name" type="button" onclick="go()">案這裡下載</button>
+</head>
+
+<body>
+
+</body>
+
+</html>
+<script type="text/javascript">
+  function go() {
+    var data = [{
+      "交易時間": "123",
+      "類型": "321",
+      "訂單號": "123",
+      "收入": "321",
+      "支出": "123",
+      "餘額": "123",
+      "交易訊息": "123"
+    }, {
+      "交易時間": "123",
+      "類型": "321",
+      "訂單號": "123",
+      "收入": "321",
+      "支出": "123",
+      "餘額": "123",
+      "交易訊息": "123"
+    }];
+    JSONToCSVConvertor(data, "詳細資料", true);
+  }
+
+
+  function exportToCSV(_csvString) {    
+    var downloadLink = document.createElement("a");    
+    downloadLink.download = "dataTable.csv";    
+    downloadLink.innerHTML = "Download File";    
+    if (window.webkitURL != null) {        
+      var code = encodeURIComponent(_csvString);        
+      if (navigator.appVersion.indexOf("Win") == -1) {            
+        downloadLink.href = "data:application/csv;charset=utf-8," + code;        
+      } else {            
+        downloadLink.href = "data:application/csv;charset=utf-8,%EF%BB%BF" + code;        
+      }    
+    }     
+    downloadLink.click();
+  }
+
+  function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
+    //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
+    var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
+    var CSV = '';
+    if (ShowLabel) {
+      var row = "";
+      for (var index in arrData[0]) {
+        row += index + ',';
+      }
+      row = row.slice(0, -1);
+      CSV += ' ,' + row + '\r\n';
+      console.log(CSV);
+    }
+    for (var i = 0; i < arrData.length; i++) {
+      var row = "";
+      for (var index in arrData[i]) {
+        row += '"' + arrData[i][index] + '",';
+      }
+      row.slice(0, row.length - 1);
+      CSV += ' ,' + row + '\r\n';
+    }
+    if (CSV == '') {
+      alert("Invalid data");
+      return;
+    }
+    return exportToCSV(CSV);
+  }
+</script>
